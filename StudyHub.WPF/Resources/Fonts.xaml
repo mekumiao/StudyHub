@@ -1,0 +1,6 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--  来自阿里巴巴iconfont图标库  -->
+    <FontFamily x:Key="IconFont">pack://application:,,,/StudyHub.WPF;component/Resources/Fonts/#iconfont</FontFamily>
+
+</ResourceDictionary>

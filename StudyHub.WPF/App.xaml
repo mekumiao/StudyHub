@@ -1,0 +1,45 @@
+<Application
+    x:Class="StudyHub.WPF.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:StudyHub.WPF.Converters"
+    xmlns:flwpf="clr-namespace:FlyleafLib.Controls.WPF;assembly=FlyleafLib"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:wd="https://github.com/WPFDevelopersOrg/WPFDevelopers">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <hc:ThemeResources />
+                <hc:Theme />
+
+                <ResourceDictionary Source="pack://application:,,,/WPFDevelopers;component/Themes/Light.Blue.xaml" />
+                <wd:Resources Theme="Dark" />
+                <ResourceDictionary Source="pack://application:,,,/WPFDevelopers;component/Themes/Theme.xaml" />
+
+                <ui:ThemesDictionary Theme="Dark" />
+                <ui:ControlsDictionary />
+
+                <ResourceDictionary Source="pack://application:,,,/StudyHub.WPF;component/Resources/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/StudyHub.WPF;component/Resources/StaticColors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/StudyHub.WPF;component/Resources/Variables.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/StudyHub.WPF;component/Resources/Styles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/StudyHub.WPF;component/Resources/Controls.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:ThemeToIndexConverter x:Key="ThemeToIndexConverter" />
+            <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+            <converters:EnumToDescriptionConverter x:Key="EnumToDescriptionConverter" />
+            <converters:IntToStringConverter x:Key="IntToStringConverter" />
+            <converters:BooleanToInverseBooleanConverter x:Key="BooleanToInverseBooleanConverter" />
+            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <converters:BooleanToCollapsedConverter x:Key="BooleanToCollapsedConverter" />
+            <converters:UtcToLocalDateTimeConverter x:Key="UtcToLocalDateTimeConverter" />
+            <converters:BooleanToStringConverter x:Key="BooleanToStringConverter" />
+            <converters:StringToBitmapFrameConverter x:Key="StringToBitmapFrameConverter" />
+            <converters:StringReplaceToOnceLineConverter x:Key="StringReplaceToOnceLineConverter" />
+            <flwpf:TicksToTimeSpanConverter x:Key="TicksToTimeSpanConverter" />
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

@@ -1,0 +1,13 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:StudyHub.WPF.Controls"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
+
+    <Style
+        x:Key="DefaultUiMessageBoxStyle"
+        BasedOn="{StaticResource {x:Type ui:MessageBox}}"
+        TargetType="local:MessageBox" />
+
+    <Style BasedOn="{StaticResource DefaultUiMessageBoxStyle}" TargetType="local:MessageBox" />
+</ResourceDictionary>

@@ -1,0 +1,218 @@
+<ui:ContentDialog
+    x:Class="StudyHub.WPF.Views.Dialogs.CourseCreateDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controlEx="clr-namespace:StudyHub.WPF.ControlExtend"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:StudyHub.WPF.Views.Dialogs"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="{Binding ViewModel.DialogTitle, Mode=OneWay}"
+    d:DataContext="{d:DesignInstance local:CourseCreateDialog,
+                                     IsDesignTimeCreatable=False}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    CloseButtonText="关闭"
+    DialogMaxWidth="900"
+    Loaded="OnLoaded"
+    Opened="OnOpened"
+    PrimaryButtonText="确认"
+    Unloaded="OnUnloaded"
+    mc:Ignorable="d">
+
+    <ui:ContentDialog.Resources>
+        <Style BasedOn="{StaticResource {x:Type ui:ContentDialog}}" TargetType="{x:Type local:CourseCreateDialog}" />
+    </ui:ContentDialog.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Margin="0,0,5,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Label Content="分类" />
+                    <ComboBox
+                        Grid.Row="1"
+                        MinWidth="280"
+                        DisplayMemberPath="Text"
+                        ItemsSource="{Binding ViewModel.Categories, Mode=OneWay}"
+                        SelectedValue="{Binding ViewModel.Category, Mode=TwoWay}"
+                        SelectedValuePath="Text" />
+                </Grid>
+
+                <Grid Grid.Row="1" Margin="2,10,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Label Content="标题" />
+                    <ui:TextBox
+                        x:Name="TitleTextBox"
+                        Grid.Row="1"
+                        Text="{Binding ViewModel.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" />
+                </Grid>
+
+                <Grid
+                    Grid.Row="1"
+                    Margin="2,10,0,0"
+                    IsEnabled="{Binding ViewModel.IsCreate, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Label Content="目录" />
+                    <ui:TextBox Grid.Row="1" Text="{Binding ViewModel.RelativePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" />
+                </Grid>
+
+                <Grid Grid.Row="2" Margin="2,10,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Label Content="描述" />
+                    <ui:TextBox
+                        Grid.Row="1"
+                        MaxLines="6"
+                        MinLines="2"
+                        Text="{Binding ViewModel.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                        TextWrapping="Wrap" />
+                </Grid>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Label Content="封面（推荐宽高比 5:3 ）" />
+                    <ui:Image
+                        Grid.Row="1"
+                        Height="280"
+                        CornerRadius="4"
+                        MouseDoubleClick="OnCoverMouseDoubleClick"
+                        Source="{Binding ViewModel.Cover, Mode=OneWay, Converter={StaticResource StringToBitmapFrameConverter}}" />
+                </Grid>
+            </StackPanel>
+        </Grid>
+
+        <StackPanel Grid.Row="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel
+                    Grid.Column="1"
+                    Margin="0,10,0,10"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <ui:Button
+                        Appearance="Primary"
+                        Command="{Binding ViewModel.SelectSectionsOnExplorerCommand, Mode=OneTime}"
+                        Content="选择课节文件" />
+                    <ui:Button
+                        Margin="10,0,0,0"
+                        Appearance="Danger"
+                        Command="{Binding ViewModel.RemoveSelectedSectionsCommand, Mode=OneTime}"
+                        Content="移除选中项 " />
+                    <ui:Button
+                        Margin="10,0,0,0"
+                        Appearance="Caution"
+                        Command="{Binding ViewModel.CleanSectionsCommand, Mode=OneTime}"
+                        Content="清空" />
+                </StackPanel>
+            </Grid>
+
+            <Popup
+                x:Name="DragDropRowPopup"
+                AllowsTransparency="True"
+                IsHitTestVisible="False"
+                Placement="RelativePoint"
+                PlacementTarget="{Binding ElementName=SectionsDataGrid}">
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontFamily="{StaticResource IconFont}"
+                    FontSize="40"
+                    FontWeight="Bold"
+                    Text="&#xe649;" />
+            </Popup>
+
+            <ui:DataGrid
+                x:Name="SectionsDataGrid"
+                MaxHeight="400"
+                controlEx:DragDropRowBehavior.Enabled="True"
+                controlEx:DragDropRowBehavior.PopupControl="{Binding ElementName=DragDropRowPopup}"
+                AutoGenerateColumns="False"
+                CanUserAddRows="False"
+                CanUserDeleteRows="False"
+                CanUserResizeColumns="True"
+                CanUserResizeRows="False"
+                CanUserSortColumns="False"
+                EnableRowVirtualization="True"
+                HorizontalScrollBarVisibility="Disabled"
+                ItemsSource="{Binding ViewModel.SectionDataContext.Items, Mode=OneWay}"
+                MinColumnWidth="100"
+                MinRowHeight="40"
+                SelectedItem="{Binding ViewModel.SectionDataContext.SelectedItem, Mode=TwoWay}"
+                SelectionUnit="FullRow">
+                <ui:DataGrid.Columns>
+                    <DataGridTemplateColumn MinWidth="50" CanUserResize="False">
+                        <DataGridTemplateColumn.Header>
+                            <CheckBox
+                                HorizontalAlignment="Center"
+                                Command="{Binding ViewModel.SectionDataContext.SelectAllCheckedCommand, Mode=OneTime, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:CourseCreateDialog}}}"
+                                IsChecked="{Binding ViewModel.SectionDataContext.SelectAll, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:CourseCreateDialog}}}"
+                                IsThreeState="True" />
+                        </DataGridTemplateColumn.Header>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox HorizontalAlignment="Center" IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn
+                        Width="200"
+                        MinWidth="200"
+                        Binding="{Binding Model.Title, Mode=TwoWay}"
+                        ElementStyle="{StaticResource CenteredTextBlockStyle}"
+                        Header="标题" />
+                    <DataGridTextColumn
+                        Width="100"
+                        MinWidth="100"
+                        Binding="{Binding Model.Duration, Mode=OneWay, StringFormat={}{0:hh\\:mm\\:ss}}"
+                        ElementStyle="{StaticResource CenteredTextBlockStyle}"
+                        Header="时长"
+                        Visibility="Collapsed" />
+                    <DataGridTextColumn
+                        Width="*"
+                        MinWidth="100"
+                        Binding="{Binding Model.Description, Mode=TwoWay}"
+                        ElementStyle="{StaticResource CenteredTextBlockStyle}"
+                        Header="描述" />
+                </ui:DataGrid.Columns>
+            </ui:DataGrid>
+        </StackPanel>
+
+    </Grid>
+</ui:ContentDialog>

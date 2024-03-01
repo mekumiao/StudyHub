@@ -1,0 +1,59 @@
+<ui:ContentDialog
+    x:Class="StudyHub.WPF.Views.Dialogs.CourseCategoryCreateDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:StudyHub.WPF.Views.Dialogs"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="{Binding ViewModel.DialogTitle, Mode=OneWay}"
+    d:DataContext="{d:DesignInstance local:CourseCategoryCreateDialog,
+                                     IsDesignTimeCreatable=False}"
+    d:DesignHeight="1000"
+    d:DesignWidth="750"
+    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    CloseButtonText="关闭"
+    DialogMaxWidth="750"
+    Opened="OnOpened"
+    PrimaryButtonText="确认"
+    mc:Ignorable="d">
+
+    <ui:ContentDialog.Resources>
+        <Style BasedOn="{StaticResource {x:Type ui:ContentDialog}}" TargetType="{x:Type local:CourseCategoryCreateDialog}" />
+    </ui:ContentDialog.Resources>
+
+    <StackPanel Width="250">
+        <Grid Margin="0,0,0,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Label Content="分类" Target="{Binding ElementName=NameTextBox}" />
+            <ui:TextBox
+                x:Name="NameTextBox"
+                Grid.Row="1"
+                PlaceholderText="请输入课程分类"
+                Text="{Binding ViewModel.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" />
+        </Grid>
+        <Grid Margin="0,0,0,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Label Content="描述" Target="{Binding ElementName=DescriptionTextBox}" />
+            <ui:TextBox
+                x:Name="DescriptionTextBox"
+                Grid.Row="1"
+                PlaceholderText="请输入课程描述"
+                Text="{Binding ViewModel.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" />
+        </Grid>
+        <ui:InfoBar
+            Title="错误"
+            Margin="0,10,0,0"
+            IsClosable="False"
+            IsOpen="{Binding ViewModel.IsError, Mode=OneWay}"
+            Message="{Binding ViewModel.Message, Mode=OneWay}"
+            Severity="Error" />
+    </StackPanel>
+</ui:ContentDialog>

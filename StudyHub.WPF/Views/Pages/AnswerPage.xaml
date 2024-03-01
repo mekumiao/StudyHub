@@ -1,0 +1,115 @@
+<Page
+    x:Class="StudyHub.WPF.Views.Pages.AnswerPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ctls="clr-namespace:StudyHub.WPF.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:StudyHub.WPF.Views.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uctls="clr-namespace:StudyHub.WPF.UserControls"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="AnswerPage"
+    Margin="20,0"
+    d:DataContext="{d:DesignInstance local:AnswerPage,
+                                     IsDesignTimeCreatable=False}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    ScrollViewer.CanContentScroll="False"
+    mc:Ignorable="d">
+
+    <Grid Margin="0,20,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="*" MinWidth="250" />
+        </Grid.ColumnDefinitions>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <ui:Card VerticalAlignment="Top" VerticalContentAlignment="Top">
+                <uctls:TopicCard
+                    Command="{Binding ViewModel.UserAnswersCommand, Mode=OneTime}"
+                    IsOpenAnalysis="{Binding ViewModel.IsOpenAnalysis, Mode=TwoWay}"
+                    Model="{Binding ViewModel.CurrentCardModel, Mode=OneWay}" />
+            </ui:Card>
+
+            <ui:Card
+                Grid.Row="1"
+                Height="80"
+                Margin="0,0,0,10"
+                VerticalAlignment="Bottom">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <ui:Button
+                        Grid.Column="0"
+                        HorizontalAlignment="Left"
+                        Appearance="Secondary"
+                        Command="{Binding ViewModel.PreviousTopicCommand, Mode=OneWay}"
+                        Content="上一题"
+                        FontSize="16"
+                        FontWeight="Bold" />
+                    <StackPanel
+                        Grid.Column="1"
+                        HorizontalAlignment="Center"
+                        Orientation="Horizontal">
+                        <ui:HyperlinkButton
+                            Grid.Column="1"
+                            HorizontalAlignment="Center"
+                            Command="{Binding ViewModel.SwitchAnalysisCommand}"
+                            Content="查看解析"
+                            Visibility="{Binding ViewModel.IsShowSwitchAnalysisButton, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <ui:Button
+                            HorizontalAlignment="Center"
+                            Appearance="Info"
+                            Command="{Binding ViewModel.SubmissionCommand}"
+                            Content="交卷"
+                            Visibility="{Binding ViewModel.IsShowSubmissionButton, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    </StackPanel>
+                    <ui:Button
+                        Grid.Column="2"
+                        HorizontalAlignment="Right"
+                        Appearance="Primary"
+                        Command="{Binding ViewModel.NextTopicCommand, Mode=OneWay}"
+                        Content="下一题"
+                        FontSize="16"
+                        FontWeight="Bold" />
+                </Grid>
+            </ui:Card>
+        </Grid>
+
+        <ctls:TopicSheet
+            Grid.Column="2"
+            Margin="20,0,0,0"
+            CountdownEnd="TopicSheet_CountdownEnd"
+            IsEnableCountdownTimer="{Binding ViewModel.IsEnableCountdownTimer, Mode=OneWay}"
+            IsStartTimerAtLoaded="True"
+            ItemsSource="{Binding ViewModel.TopicSheets, Mode=OneWay}"
+            SelectedIndex="{Binding ViewModel.CurrentIndex, Mode=TwoWay}"
+            SheetMode="{Binding ViewModel.SheetMode, Mode=OneWay}"
+            Duration="{Binding ViewModel.RemainingTime, Mode=TwoWay}">
+            <ctls:TopicSheet.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Children, Mode=OneWay}">
+                    <TextBlock Text="{Binding Title, Mode=OneWay}" />
+                    <HierarchicalDataTemplate.ItemTemplate>
+                        <DataTemplate DataType="local:Topic">
+                            <ctls:TopicCell
+                                Content="{Binding Order, Mode=OneWay}"
+                                IsSelected="{Binding IsSelected, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TreeViewItem}}"
+                                Status="{Binding Status, Mode=OneWay}" />
+                        </DataTemplate>
+                    </HierarchicalDataTemplate.ItemTemplate>
+                </HierarchicalDataTemplate>
+            </ctls:TopicSheet.ItemTemplate>
+        </ctls:TopicSheet>
+    </Grid>
+</Page>

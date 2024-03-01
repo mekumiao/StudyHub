@@ -1,0 +1,226 @@
+<Page
+    x:Class="StudyHub.WPF.Views.Pages.CheckResultPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:local="clr-namespace:StudyHub.WPF.Views.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="CheckResultPage"
+    Margin="20,0"
+    d:DataContext="{d:DesignInstance local:CheckResultPage,
+                                     IsDesignTimeCreatable=False}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    ScrollViewer.CanContentScroll="False"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <system:Double x:Key="CircleProgressBarSize">140</system:Double>
+
+        <Style x:Key="EvaluationAnswerRecordLeftControlStyle" TargetType="Control">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <StackPanel
+                            MinWidth="{StaticResource CircleProgressBarSize}"
+                            Margin="{TemplateBinding Margin}"
+                            HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                            VerticalAlignment="Center">
+                            <hc:CircleProgressBar
+                                Width="{StaticResource CircleProgressBarSize}"
+                                Height="{StaticResource CircleProgressBarSize}"
+                                ArcThickness="12"
+                                Foreground="{DynamicResource AccentButtonBackground}"
+                                Text="{Binding ViewModel.AnswerRecord.Score, StringFormat={}{0} 分, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:CheckResultPage}}"
+                                Value="{Binding ViewModel.PercentScore, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:CheckResultPage}}" />
+                            <ui:TextBlock
+                                Width="120"
+                                Margin="0,20,0,0"
+                                Text="{Binding ViewModel.AnswerRecord.TotalScore, Mode=OneWay, StringFormat=总分：{0} 分, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:CheckResultPage}}"
+                                TextAlignment="Center" />
+                        </StackPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <ui:Card Margin="0,20,0,0" VerticalAlignment="Top">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Border
+                Width="120"
+                BorderBrush="{DynamicResource AccentButtonBackground}"
+                BorderThickness="0,0,0,2">
+                <TextBlock
+                    Margin="0,0,0,5"
+                    HorizontalAlignment="Center"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Text="{Binding ViewModel.Title, Mode=OneWay}" />
+            </Border>
+
+            <Separator
+                Grid.Row="1"
+                Margin="0,10,0,10"
+                HorizontalAlignment="Stretch" />
+
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="5*" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+                <Control
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Style="{StaticResource EvaluationAnswerRecordLeftControlStyle}" />
+                <StackPanel
+                    Grid.Column="3"
+                    MinWidth="200"
+                    HorizontalAlignment="Stretch">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                            <TextBlock Text="单选题" />
+                            <Label Content="{Binding ViewModel.AnswerRecord.SingleCount, Mode=OneWay}" ContentStringFormat="({0}题)" />
+                        </StackPanel>
+                        <StackPanel
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            Orientation="Horizontal">
+                            <Label Content="正确" />
+                            <Label Content="{Binding ViewModel.TotalSingleCorrect}" Foreground="{StaticResource AccentButtonBackground}" />
+                            <Label Content="题" />
+                        </StackPanel>
+                    </Grid>
+                    <Separator Margin="0,0,0,10" HorizontalAlignment="Stretch" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                            <TextBlock Text="多选题" />
+                            <Label Content="{Binding ViewModel.AnswerRecord.MultipleCount, Mode=OneWay}" ContentStringFormat="({0}题)" />
+                        </StackPanel>
+                        <StackPanel
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            Orientation="Horizontal">
+                            <Label Content="正确" />
+                            <Label Content="{Binding ViewModel.TotalMultipleCorrect, Mode=OneWay}" Foreground="{StaticResource AccentButtonBackground}" />
+                            <Label Content="题" />
+                        </StackPanel>
+                    </Grid>
+                    <Separator Margin="0,0,0,10" HorizontalAlignment="Stretch" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                            <TextBlock Text="判断题" />
+                            <Label Content="{Binding ViewModel.AnswerRecord.TrueFalseCount, Mode=OneWay}" ContentStringFormat="({0}题)" />
+                        </StackPanel>
+                        <StackPanel
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            Orientation="Horizontal">
+                            <Label Content="正确" />
+                            <Label Content="{Binding ViewModel.TotalTrueFalseCorrect, Mode=OneWay}" Foreground="{StaticResource AccentButtonBackground}" />
+                            <Label Content="题" />
+                        </StackPanel>
+                    </Grid>
+                    <Separator Margin="0,0,0,10" HorizontalAlignment="Stretch" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                            <TextBlock Text="填空题" />
+                            <Label Content="{Binding ViewModel.AnswerRecord.FillCount, Mode=OneWay}" ContentStringFormat="({0}题)" />
+                        </StackPanel>
+                        <StackPanel
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            Orientation="Horizontal">
+                            <Label Content="正确" />
+                            <Label Content="{Binding ViewModel.TotalFillCorrect, Mode=OneWay}" Foreground="{StaticResource AccentButtonBackground}" />
+                            <Label Content="题" />
+                        </StackPanel>
+                    </Grid>
+                    <Separator Margin="0,0,0,10" HorizontalAlignment="Stretch" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                            <TextBlock Text="已作答" />
+                            <Label Content="{Binding ViewModel.AnswerRecord.TotalAnswer, Mode=OneWay}" ContentStringFormat="({0}题)" />
+                        </StackPanel>
+                        <StackPanel
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            Orientation="Horizontal">
+                            <Label Content="正确" />
+                            <Label Content="{Binding ViewModel.AnswerRecord.TotalCorrect, Mode=OneWay}" Foreground="{StaticResource AccentButtonBackground}" />
+                            <Label Content="题" />
+                        </StackPanel>
+                    </Grid>
+                    <Separator Margin="0,0,0,10" HorizontalAlignment="Stretch" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                            <TextBlock Text="总题目" />
+                            <Label Content="{Binding ViewModel.AnswerRecord.TotalTopic, Mode=OneWay}" ContentStringFormat="({0}题)" />
+                        </StackPanel>
+                        <StackPanel
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            Orientation="Horizontal">
+                            <Label Content="正确" />
+                            <Label Content="{Binding ViewModel.AnswerRecord.TotalCorrect, Mode=OneWay}" Foreground="{StaticResource AccentButtonBackground}" />
+                            <Label Content="题" />
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+
+            <Separator
+                Grid.Row="3"
+                Margin="0,10,0,10"
+                HorizontalAlignment="Stretch" />
+
+            <ui:Button
+                Grid.Row="4"
+                Appearance="Primary"
+                Command="{Binding ViewModel.RouteToDashboardPageCommand}"
+                Content="回到首页"
+                Icon="{ui:SymbolIcon Home32}" />
+        </Grid>
+    </ui:Card>
+</Page>

@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(PackagesCommonFrameworks)</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+      <PackageReference Include="EntityFrameworkCore.Exceptions.Common" Version="8.0.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.1" />
+  </ItemGroup>
+
+</Project>
