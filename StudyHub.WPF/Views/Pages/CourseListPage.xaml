@@ -27,23 +27,18 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ui:Card>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
+        <ui:Card Padding="10">
+            <StackPanel
+                Height="50"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="70" />
+                        <ColumnDefinition Width="100" />
                     </Grid.ColumnDefinitions>
-                    <Label
-                        Margin="0,0,10,0"
-                        VerticalAlignment="Center"
-                        Content="课程分类" />
+                    <Label VerticalAlignment="Center" Content="课程分类:" />
                     <ComboBox
                         Grid.Column="1"
                         DisplayMemberPath="Text"
@@ -52,7 +47,7 @@
                         SelectedValuePath="Id" />
                 </Grid>
 
-                <Grid Grid.Column="1" Margin="20,0,0,0">
+                <Grid Margin="20,0,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition MinWidth="250" />
                     </Grid.ColumnDefinitions>
@@ -68,7 +63,7 @@
                         </ui:TextBox.InputBindings>
                     </ui:TextBox>
                 </Grid>
-            </Grid>
+            </StackPanel>
         </ui:Card>
 
         <DockPanel

@@ -122,6 +122,7 @@ public partial class App : Application {
               services.AddSingleton<CoursePlayerRouteData>();
               services.AddSingleton<CourseViewModelRouteData>();
               services.AddSingleton<AssessmentViewModelRouteData>();
+              services.AddSingleton<CourseListViewModelRouteData>();
               #endregion
 
               #region Dialog 注入

@@ -26,9 +26,14 @@ internal class CourseListViewModelRegister : IRegister {
     }
 }
 
+public class CourseListViewModelRouteData {
+    public bool NeedToRefresh { get; set; }
+}
+
 public partial class CourseListViewModel(
     IMapper mapper,
     CourseViewModelRouteData courseViewModelRouteData,
+    CourseListViewModelRouteData courseListViewModelRouteData,
     CourseService courseService,
     CourseCategoryOptionService courseCategoryOptionService,
     NotificationService notificationService) : ObservableObject, INavigationAware {
@@ -38,7 +43,8 @@ public partial class CourseListViewModel(
     }
 
     public async void OnNavigatedTo() {
-        if (_isInitialized is false) {
+        if (courseListViewModelRouteData.NeedToRefresh || _isInitialized is false) {
+            courseListViewModelRouteData.NeedToRefresh = false;
             await LoadCategoriesCommand.ExecuteAsync(null);
             await LoadCoursesCommand.ExecuteAsync(null);
         }
@@ -57,12 +63,18 @@ public partial class CourseListViewModel(
     [ObservableProperty]
     private int _countPerPage = 20;
 
+    private bool CanLoadCourses { get; set; }
+
     partial void OnCurrentPageChanged(int value) {
-        LoadCoursesCommand.ExecuteAsync(null);
+        if (CanLoadCourses) {
+            LoadCoursesCommand.ExecuteAsync(null);
+        }
     }
 
     partial void OnCountPerPageChanged(int value) {
-        LoadCoursesCommand.ExecuteAsync(null);
+        if (CanLoadCourses) {
+            LoadCoursesCommand.ExecuteAsync(null);
+        }
     }
 
     private Paging GetPaging() {
@@ -72,25 +84,33 @@ public partial class CourseListViewModel(
     public SupportsSelectAllOfDataContext<CourseDto> CourseDataContext { get; } = new();
 
     partial void OnSelectedCategoryIdChanged(int value) {
-        LoadCoursesCommand.ExecuteAsync(null);
+        if (CanLoadCourses) {
+            LoadCoursesCommand.ExecuteAsync(null);
+        }
     }
 
     [RelayCommand]
     private async Task OnRefreshAsync() {
         await OnLoadCategoriesAsync();
-        if (SelectedCategoryId == 0) {
-            await OnLoadCoursesAsync();
-        }
+        await OnLoadCoursesAsync();
     }
 
     [RelayCommand]
     private async Task OnLoadCategoriesAsync() {
-        Categories = await courseCategoryOptionService.GetOptionsWithDefaultAsync();
-        SelectedCategoryId = 0;
-        _isInitialized = true;
+        CanLoadCourses = false;
+        LoadCoursesCommand.NotifyCanExecuteChanged();
+        try {
+            Categories = await courseCategoryOptionService.GetOptionsWithDefaultAsync();
+            SelectedCategoryId = 0;
+            _isInitialized = true;
+        }
+        finally {
+            CanLoadCourses = true;
+            LoadCoursesCommand.NotifyCanExecuteChanged();
+        }
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanLoadCourses))]
     private async Task OnLoadCoursesAsync() {
         var filter = new CourseFilter {
             Keyword = Keyword,

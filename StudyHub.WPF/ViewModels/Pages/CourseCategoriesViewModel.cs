@@ -25,6 +25,7 @@ internal class CourseCategoriesViewModelRegister : IRegister {
 
 public partial class CourseCategoriesViewModel(
     CourseViewModelRouteData courseViewModelRouteData,
+    CourseListViewModelRouteData courseListViewModelRouteData,
     CourseCategoryService courseCategoryService,
     NotificationService notificationService,
     IMapper mapper) : ObservableObject, INavigationAware {
@@ -65,6 +66,7 @@ public partial class CourseCategoriesViewModel(
         if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add) {
             await courseCategoryService.SortingAsync(CategoryDataContext.Items.Select(v => v.Model.CourseCategoryId));
             courseViewModelRouteData.NeedToRefresh = true;
+            courseListViewModelRouteData.NeedToRefresh = true;
         }
     }
 
@@ -92,6 +94,7 @@ public partial class CourseCategoriesViewModel(
             }
             await OnLoadAsync();
             courseViewModelRouteData.NeedToRefresh = true;
+            courseListViewModelRouteData.NeedToRefresh = true;
         }
     }
 
@@ -103,6 +106,7 @@ public partial class CourseCategoriesViewModel(
         if (result is ContentDialogResult.Primary) {
             await OnLoadAsync();
             courseViewModelRouteData.NeedToRefresh = true;
+            courseListViewModelRouteData.NeedToRefresh = true;
         }
     }
 
@@ -117,6 +121,7 @@ public partial class CourseCategoriesViewModel(
         if (result is ContentDialogResult.Primary) {
             await OnLoadAsync();
             courseViewModelRouteData.NeedToRefresh = true;
+            courseListViewModelRouteData.NeedToRefresh = true;
         }
     }
 }

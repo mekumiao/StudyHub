@@ -6,7 +6,6 @@ using Mapster;
 using MapsterMapper;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using StudyHub.Service.Base;
@@ -383,6 +382,19 @@ public class CourseService(
             }
         }
         await dbContext.SaveChangesAsync();
+        return ServiceResult.Ok();
+    }
+
+    public ServiceResult EachUpdateReadme(Action<CourseYmlModel> setup) {
+        var directoryInfo = new DirectoryInfo(CoursesRootDirectory);
+        if (directoryInfo.Exists is false) return ServiceResult.NotFound();
+        foreach (var dir in directoryInfo.GetDirectories()) {
+            var yml = GetCourseByReadme(dir);
+            if (yml != null) {
+                setup(yml);
+                SetCourseToReadme(dir, yml);
+            }
+        }
         return ServiceResult.Ok();
     }
 }

@@ -25,10 +25,10 @@ public partial class CourseViewModel(
     }
 
     public async void OnNavigatedTo() {
-        if (courseViewModelRouteData.NeedToRefresh is true || _isInitialized is false) {
+        if (courseViewModelRouteData.NeedToRefresh || _isInitialized is false) {
+            courseViewModelRouteData.NeedToRefresh = false;
             await LoadCategoriesCommand.ExecuteAsync(null);
             await LoadCoursesCommand.ExecuteAsync(null);
-            courseViewModelRouteData.NeedToRefresh = false;
         }
     }
 
@@ -38,6 +38,7 @@ public partial class CourseViewModel(
     private LabelValueOption[] _categories = [];
     [ObservableProperty]
     private int _selectedCategoryId;
+
     private bool CanLoadCourses { get; set; }
 
     partial void OnSelectedCategoryIdChanged(int value) {

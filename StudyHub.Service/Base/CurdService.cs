@@ -16,13 +16,15 @@ public abstract class CurdService<TEntity, TKey, TGetOutputDto, TGetListOutputDt
     where TGetListFilter : class, IQueryableFilter<TEntity>
     where TCreateInput : class
     where TUpdateInput : class {
+    protected readonly StudyHubDbContext _dbContext = dbContext;
+    protected readonly IMapper _mapper = mapper;
 
     public async virtual Task<ServiceResult<TGetOutputDto>> GetEntityByIdAsync(TKey id) {
-        var item = await dbContext.Set<TEntity>().FindAsync(id);
+        var item = await _dbContext.Set<TEntity>().FindAsync(id);
         if (item == null) {
             return ServiceResult.NotFound<TGetOutputDto>();
         }
-        var result = mapper.Map<TGetOutputDto>(item);
+        var result = _mapper.Map<TGetOutputDto>(item);
         return ServiceResult.Ok(result);
     }
 
@@ -35,41 +37,41 @@ public abstract class CurdService<TEntity, TKey, TGetOutputDto, TGetListOutputDt
         queryable = paging.Build(queryable);
         var result = await queryable.ToListAsync();
 
-        var resultItems = mapper.Map<TGetListOutputDto[]>(result);
+        var resultItems = _mapper.Map<TGetListOutputDto[]>(result);
         var pageResult = new PagingResult<TGetListOutputDto>(paging, total, resultItems);
         return ServiceResult.Ok(pageResult);
     }
 
     public async virtual Task<ServiceResult<TGetOutputDto>> CreateAsync(TCreateInput dto) {
-        var item = mapper.Map<TEntity>(dto);
-        dbContext.Add(item);
-        await dbContext.SaveChangesAsync();
-        return ServiceResult.Ok(mapper.Map<TGetOutputDto>(item));
+        var item = _mapper.Map<TEntity>(dto);
+        _dbContext.Add(item);
+        await _dbContext.SaveChangesAsync();
+        return ServiceResult.Ok(_mapper.Map<TGetOutputDto>(item));
     }
 
     public async virtual Task<ServiceResult<TGetOutputDto>> UpdateAsync(TKey id, TUpdateInput dto) {
-        var item = await dbContext.Set<TEntity>().FindAsync(id);
+        var item = await _dbContext.Set<TEntity>().FindAsync(id);
         if (item is null) {
             return ServiceResult.NotFound<TGetOutputDto>();
         }
-        mapper.Map(dto, item);
+        _mapper.Map(dto, item);
         try {
-            await dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException) {
             return ServiceResult.NotFound<TGetOutputDto>();
         }
-        return ServiceResult.Ok(mapper.Map<TGetOutputDto>(item));
+        return ServiceResult.Ok(_mapper.Map<TGetOutputDto>(item));
     }
 
     public async virtual Task<ServiceResult> DeleteAsync(TKey id) {
-        var item = await dbContext.Set<TEntity>().FindAsync(id);
+        var item = await _dbContext.Set<TEntity>().FindAsync(id);
         if (item is null) {
             return ServiceResult.NotFound();
         }
-        dbContext.Set<TEntity>().Remove(item);
+        _dbContext.Set<TEntity>().Remove(item);
         try {
-            await dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException) {
         }
@@ -77,7 +79,7 @@ public abstract class CurdService<TEntity, TKey, TGetOutputDto, TGetListOutputDt
     }
 
     protected virtual IQueryable<TEntity> QueryAll() {
-        return dbContext.Set<TEntity>().AsNoTracking();
+        return _dbContext.Set<TEntity>().AsNoTracking();
     }
 
     public abstract Task<ServiceResult> DeleteItemsAsync(TKey[] ids);

@@ -3,6 +3,7 @@ using EntityFramework.Exceptions.Common;
 using MapsterMapper;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 using StudyHub.Service.Base;
 using StudyHub.Service.Models;
@@ -11,9 +12,8 @@ using StudyHub.Storage.Entities;
 
 namespace StudyHub.Service;
 
-public class CourseCategoryService(StudyHubDbContext dbContext, IMapper mapper, ILogger<CourseCategoryService> logger)
+public class CourseCategoryService(StudyHubDbContext dbContext, IMapper mapper, ILogger<CourseCategoryService> logger, IServiceProvider serviceProvider)
     : CurdService<CourseCategory, int, CourseCategoryDto, CourseCategoryDto, CourseCategoryFilter, CourseCategoryCreate, CourseCategoryUpdate>(dbContext, mapper) {
-    private readonly StudyHubDbContext _dbContext = dbContext;
 
     protected override IQueryable<CourseCategory> QueryAll() {
         return base.QueryAll().OrderBy(v => v.Order).ThenByDescending(v => v.CourseCategoryId);
@@ -48,13 +48,38 @@ public class CourseCategoryService(StudyHubDbContext dbContext, IMapper mapper, 
     }
 
     public async override Task<ServiceResult<CourseCategoryDto>> UpdateAsync(int id, CourseCategoryUpdate dto) {
+        var category = await _dbContext.CourseCategories.FindAsync(id);
+        if (category is null) {
+            return ServiceResult.NotFound<CourseCategoryDto>();
+        }
+        var oldCategoryName = category.Name;
+
+        await _dbContext.Entry(category).Collection(v => v.Courses).LoadAsync();
+
+        _mapper.Map(dto, category);
+
+        foreach (var item in category.Courses) {
+            item.Category = category.Name;
+        }
+
         try {
-            return await base.UpdateAsync(id, dto);
+            await _dbContext.SaveChangesAsync();
         }
         catch (UniqueConstraintException ex) {
             logger.LogError(ex, "修改课程分类时异常 {dto}", dto);
             return ServiceResult.Error<CourseCategoryDto>("课程分类名称已存在");
         }
+
+        if (string.IsNullOrWhiteSpace(dto.Name) is false) {
+            var courseService = serviceProvider.GetRequiredService<CourseService>();
+            courseService.EachUpdateReadme(yml => {
+                if (yml.Category == oldCategoryName) {
+                    yml.Category = dto.Name;
+                }
+            });
+        }
+
+        return ServiceResult.Ok(_mapper.Map<CourseCategoryDto>(category));
     }
 
     public async Task<ServiceResult> SortingAsync(IEnumerable<int> ids) {
